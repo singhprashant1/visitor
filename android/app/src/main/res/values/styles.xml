@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Theme applied to the Android Window while the process is starting -->
+     <string name="app_name">visitor</string>
+    <string name="facebook_app_id">1322034148175802</string>
+    <string name="fb_login_protocol_scheme">fb1322034148175802</string>
     <style name="LaunchTheme" parent="@android:style/Theme.Black.NoTitleBar">
         <!-- Show a splash screen on the activity. Automatically removed when
              Flutter draws its first frame -->

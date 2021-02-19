@@ -1,9 +1,8 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:hexcolor/hexcolor.dart';
-import 'package:ikss/phoneAuth/login.dart';
-import 'package:ikss/phoneAuth/regOtp.dart';
 import 'package:toast/toast.dart';
+import 'package:visitor/phoneAuth/login.dart';
+import 'package:visitor/phoneAuth/regOtp.dart';
 
 class FirstPage extends StatefulWidget {
   @override

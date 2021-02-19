@@ -2,11 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:ikss/audio/audiop.dart';
-import 'package:ikss/phoneAuth/login.dart';
 import 'dart:async';
-
-import 'package:ikss/video/videop.dart';
+import 'package:visitor/audio/audiop.dart';
+import 'package:visitor/phoneAuth/login.dart';
+import 'package:visitor/video/videop.dart';
 
 import '../constant.dart';
 

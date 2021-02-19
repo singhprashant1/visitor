@@ -1,17 +1,13 @@
-// import 'dart:convert';
-
 import 'dart:convert';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:hexcolor/hexcolor.dart';
-import 'package:ikss/googlemap/gmap.dart';
-import 'package:ikss/phoneAuth/loginotp.dart';
 import 'package:toast/toast.dart';
+import 'package:visitor/googlemap/gmap.dart';
+import 'package:visitor/phoneAuth/loginotp.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:http/http.dart' as http;
 
 class LoginPage extends StatefulWidget {
   @override
@@ -21,6 +17,19 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   TextEditingController numberController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final fbLogin = FacebookLogin();
+  Future signInFB() async {
+    final FacebookLoginResult result = await fbLogin.logIn(["email"]);
+    final String token = result.accessToken.token;
+
+    final response = await http.get(
+        'https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email&access_token=${token}');
+    final profile = jsonDecode(response.body);
+    print(token);
+    print(profile);
+    Navigator.push(context, MaterialPageRoute(builder: (context) => Gmapp()));
+    return profile;
+  }
 
   void readData(String number) async {
     var dbRef = await FirebaseDatabase.instance.reference().child("Cust");
@@ -66,40 +75,40 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  bool isLoggedIn = false;
-  var profileData;
+  // bool isLoggedIn = false;
+  // var profileData;
 
-  var facebookLogin = FacebookLogin();
+  // var facebookLogin = FacebookLogin();
 
-  void onLoginStatusChanged(bool isLoggedIn, {profileData}) {
-    setState(() {
-      this.isLoggedIn = isLoggedIn;
-      this.profileData = profileData;
-    });
-  }
+  // void onLoginStatusChanged(bool isLoggedIn, {profileData}) {
+  //   setState(() {
+  //     this.isLoggedIn = isLoggedIn;
+  //     this.profileData = profileData;
+  //   });
+  // }
 
-  void initiateFacebookLogin() async {
-    var facebookLoginResult =
-        await facebookLogin.logInWithReadPermissions(['email']);
+  // void initiateFacebookLogin() async {
+  //   var facebookLoginResult =
+  //       await facebookLogin.logInWithReadPermissions(['email']);
 
-    switch (facebookLoginResult.status) {
-      case FacebookLoginStatus.error:
-        onLoginStatusChanged(false);
-        break;
-      case FacebookLoginStatus.cancelledByUser:
-        onLoginStatusChanged(false);
-        break;
-      case FacebookLoginStatus.loggedIn:
-        var graphResponse = await http.get(
-            'https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email,picture.height(200)&access_token=${facebookLoginResult.accessToken.token}');
+  //   switch (facebookLoginResult.status) {
+  //     case FacebookLoginStatus.error:
+  //       onLoginStatusChanged(false);
+  //       break;
+  //     case FacebookLoginStatus.cancelledByUser:
+  //       onLoginStatusChanged(false);
+  //       break;
+  //     case FacebookLoginStatus.loggedIn:
+  //       var graphResponse = await http.get(
+  //           'https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email,picture.height(200)&access_token=${facebookLoginResult.accessToken.token}');
 
-        var profile = json.decode(graphResponse.body);
-        print(profile.toString());
+  //       var profile = json.decode(graphResponse.body);
+  //       print(profile.toString());
 
-        onLoginStatusChanged(true, profileData: profile);
-        break;
-    }
-  }
+  //       onLoginStatusChanged(true, profileData: profile);
+  //       break;
+  //   }
+  // }
 
   @override
   void _validateInputs() {
@@ -185,7 +194,7 @@ class _LoginPageState extends State<LoginPage> {
                         style: TextStyle(color: Colors.white, fontSize: 20.0),
                       ),
                       onPressed: () {
-                        initiateFacebookLogin();
+                        signInFB();
                       },
                       splashColor: Colors.redAccent,
                     ),
