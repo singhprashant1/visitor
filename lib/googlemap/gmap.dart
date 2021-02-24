@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'dart:async';
 import 'package:visitor/audio/audiop.dart';
 import 'package:visitor/phoneAuth/login.dart';
@@ -15,6 +17,7 @@ class Gmapp extends StatefulWidget {
 }
 
 class _GmappState extends State<Gmapp> {
+  bool _visible = false;
   Set<Marker> _marker = {};
   double bottampaddingofMap = 0;
   Completer<GoogleMapController> _controllergooglemap = Completer();
@@ -38,10 +41,14 @@ class _GmappState extends State<Gmapp> {
     );
   }
 
+  final fbLogin = FacebookLogin();
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
   Future<void> _logout() async {
     try {
       Constants.prefs.setBool("loggedIn", false);
       await FirebaseAuth.instance.signOut();
+      await fbLogin.logOut();
+      await _googleSignIn.signOut();
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => LoginPage()));
     } catch (e) {
@@ -108,10 +115,9 @@ class _GmappState extends State<Gmapp> {
                       title: 'Demo',
                       snippet: 'Demo data',
                       onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => VideoPlayerr()));
+                        setState(() {
+                          _visible = !_visible;
+                        });
                       }),
                 ));
                 _marker.add(Marker(
@@ -122,14 +128,66 @@ class _GmappState extends State<Gmapp> {
                       title: 'Demo2',
                       snippet: 'Demo data',
                       onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => AudioPlayerUrl()));
+                        setState(() {
+                          _visible = !_visible;
+                        });
                       }),
                 ));
               });
             },
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Visibility(
+                child: MaterialButton(
+                  height: 52,
+                  minWidth: 323,
+                  color: Colors.blue[900],
+                  textColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24.0),
+                  ),
+                  child: Text(
+                    "Audio",
+                    style: TextStyle(color: Colors.white, fontSize: 20.0),
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AudioPlayerUrl()));
+                    // signInwithGoogle();
+                  },
+                  splashColor: Colors.redAccent,
+                ),
+                visible: _visible,
+              ),
+              Visibility(
+                child: MaterialButton(
+                  height: 52,
+                  minWidth: 323,
+                  color: Colors.blue[900],
+                  textColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24.0),
+                  ),
+                  child: Text(
+                    "Video",
+                    style: TextStyle(color: Colors.white, fontSize: 20.0),
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => VideoPlayerr()));
+                    // signInwithGoogle();
+                  },
+                  splashColor: Colors.redAccent,
+                ),
+                visible: _visible,
+              ),
+            ],
           )
         ],
       ),

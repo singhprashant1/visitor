@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 // import 'package:ikss/register.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:visitor/googlemap/gmap.dart';
-import 'package:visitor/phoneAuth/login.dart';
+import 'package:visitor/loginwithbloc.dart';
 import 'package:visitor/phoneAuth/register.dart';
 
 import 'constant.dart';
@@ -19,7 +19,8 @@ Future main() async {
 
   runApp(MaterialApp(
     title: "Ikss",
-    home: LoginPage(),
+    // home: Constants.prefs.getBool("loggedIn") == true ? Gmapp() : FirstPage(),
+    home: HomePage(),
     debugShowCheckedModeBanner: false,
     routes: {
       "/logout": (context) => FirstPage(),

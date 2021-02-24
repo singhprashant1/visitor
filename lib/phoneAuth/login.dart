@@ -9,6 +9,8 @@ import 'package:visitor/phoneAuth/loginotp.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:http/http.dart' as http;
 
+import '../constant.dart';
+
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -27,6 +29,7 @@ class _LoginPageState extends State<LoginPage> {
     final profile = jsonDecode(response.body);
     print(token);
     print(profile);
+    Constants.prefs.setBool("loggedIn", true);
     Navigator.push(context, MaterialPageRoute(builder: (context) => Gmapp()));
     return profile;
   }
@@ -38,7 +41,7 @@ class _LoginPageState extends State<LoginPage> {
         .equalTo(number)
         .once()
         .then((DataSnapshot snapshot) {
-      if (snapshot.value != null) {
+      if (snapshot.value == null) {
         Toast.show("User not registerd", context,
             duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
       } else {
@@ -69,6 +72,7 @@ class _LoginPageState extends State<LoginPage> {
     );
     await _auth.signInWithCredential(credential);
     _user = await _auth.currentUser();
+    Constants.prefs.setBool("loggedIn", true);
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => Gmapp()),
