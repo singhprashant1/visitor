@@ -19,6 +19,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   TextEditingController numberController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  //fb login
   final fbLogin = FacebookLogin();
   Future signInFB() async {
     final FacebookLoginResult result = await fbLogin.logIn(["email"]);
@@ -34,6 +36,7 @@ class _LoginPageState extends State<LoginPage> {
     return profile;
   }
 
+//firebase database
   void readData(String number) async {
     var dbRef = await FirebaseDatabase.instance.reference().child("Cust");
     dbRef
@@ -57,6 +60,7 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
+//Google login
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   FirebaseUser _user;
