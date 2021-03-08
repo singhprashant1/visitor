@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:visitor/bloc.dart';
 import 'package:visitor/googlemap/gmap.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   changeThePage(BuildContext context) {
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => Gmapp()));
@@ -10,8 +16,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bloc = Bloc();
-
+    final bloc = Provider.of<Bloc>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: Text("Bloc Pattern"),
@@ -55,22 +60,60 @@ class HomePage extends StatelessWidget {
               SizedBox(
                 height: 20.0,
               ),
-              StreamBuilder<bool>(
-                stream: bloc.submitCheck,
-                builder: (context, snapshot) => RaisedButton(
-                  color: Colors.tealAccent,
-                  onPressed: snapshot.hasData
-                      ? () {
-                          changeThePage(context);
-                        }
-                      : null,
-                  child: Text("Submit"),
-                ),
-              ),
+              // StreamBuilder<bool>(
+              //   stream: bloc.submitValidForm,
+              //   builder: (context, snapshot) => RaisedButton(
+              //     color: snapshot.hasError || !snapshot.hasData
+              //         ? Colors.grey
+              //         : Colors.blue,
+              //     onPressed: snapshot.hasError || !snapshot.hasData
+              //         ? null
+              //         : () {
+              //             print("data");
+              //           },
+              //     child: Text("Submit"),
+              //   ),
+              // ),
+              _buildButton()
             ],
           ),
         ),
       ),
     );
+  }
+
+  Widget _buildButton() {
+    final bloc = Provider.of<Bloc>(context, listen: false);
+
+    return StreamBuilder<Object>(
+        stream: bloc.submitValidForm,
+        builder: (context, snapshot) {
+          return GestureDetector(
+            onTap: snapshot.hasError || !snapshot.hasData
+                ? null
+                : () {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) => Gmapp()));
+                  },
+            child: Container(
+              height: 40,
+              width: 120,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: snapshot.hasError || !snapshot.hasData
+                    ? Colors.grey
+                    : Color(0xffff69b4),
+              ),
+              child: Text(
+                "Login",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 23,
+                ),
+              ),
+            ),
+          );
+        });
   }
 }
